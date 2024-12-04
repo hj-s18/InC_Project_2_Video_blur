@@ -38,54 +38,40 @@
             color: #333;
         }
 
-        .login-container input[type="text"],
-        .login-container input[type="password"],
-        .login-container button {
+        .login-button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .login-container button {
-            background-color: #333;
-            color: white;
             border: none;
+            border-radius: 4px;
+            color: white;
             cursor: pointer;
         }
 
-        .login-container button:hover {
-            background-color: #333;
+        .naver-login {
+            background-color: #1ec800;
         }
 
-        .signup-button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 4px;
+        .kakao-login {
+            background-color: #fee500;
+            color: #3c1e1e;
         }
 
-        .signup-button:hover {
-            background-color: #218838;
+        .google-login {
+            background-color: #4285f4;
+        }
+
+        .login-button:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2 class="fancy-title">login</h2>
-        <form action="/user/login" method="post">
-            <input type="text" name="username" placeholder="아이디" required>
-            <input type="password" name="password" placeholder="비밀번호" required>
-            <button type="submit">로그인</button>
-        </form>
-        <button class="signup-button" onclick="location.href='/user/signup'">회원가입</button>
-        <button onclick="location.href='/user/find_pw'"><center><font size=2>비밀번호 찾기</font></center></button>
+        <button class="login-button naver-login" onclick="location.href='/auth/naver'">네이버 로그인</button>
+        <button class="login-button kakao-login" onclick="location.href='/auth/kakao'">카카오 로그인</button>
+        <button class="login-button google-login" onclick="location.href='/auth/google'">구글 로그인</button>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <script>
