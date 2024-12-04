@@ -70,7 +70,7 @@
     <div class="login-container">
         <h2 class="fancy-title">login</h2>
         <button class="login-button naver-login" onclick="location.href='/auth/naver'">네이버 로그인</button>
-        <button class="login-button kakao-login" onclick="location.href='/auth/kakao'">카카오 로그인</button>
+        <button class="login-button kakao-login" onclick="location.href='/kakaoLoginLogic'">카카오 로그인</button>
         <button class="login-button google-login" onclick="location.href='/auth/google'">구글 로그인</button>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
