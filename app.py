@@ -8,10 +8,6 @@ app.secret_key = "1234"  # Flask의 세션 암호화를 위한 키
 REST_API_KEY = "d37e3286aa4a1b7e3a2c084309f70d72"
 REDIRECT_URI = "http://127.0.0.1:8000/kakaoLoginLogicRedirect"
 
-@app.route('/')
-def index():
-    return render_template('home.html')
-
 # 네이버 로그인 구현
 @app.route('/auth/naver')
 def naver_login():
@@ -41,11 +37,6 @@ def naver_callback():
     
     print(profile_data)
     return 'Login Success' # 메인페이지로 리디렉션 되도록 수정
-
-# 카카오 로그인 구현
-@app.route('/auth/kakao')
-def method_name():
-    pass
 
 # 구글 로그인 구현
 @app.route('/auth/google')
@@ -124,6 +115,10 @@ def kakaoLoginLogicRedirect():
     else:
         print("Access token 발급 실패:", response.json())
         return "Access token 발급 실패.", 500
+
+@app.route('/')
+def index():
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)
