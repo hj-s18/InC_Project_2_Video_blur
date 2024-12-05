@@ -1,5 +1,5 @@
 from flask import Flask, session, redirect, request, render_template, jsonify
-import requests
+import requests, os
 
 app = Flask(__name__)
 app.secret_key = "1234"  # Flask의 세션 암호화를 위한 키
@@ -8,9 +8,14 @@ app.secret_key = "1234"  # Flask의 세션 암호화를 위한 키
 REST_API_KEY = "d37e3286aa4a1b7e3a2c084309f70d72"
 REDIRECT_URI = "http://127.0.0.1:8000/kakaoLoginLogicRedirect"
 
-# # 동영상 모자이크 페이지
-@app.route('/videoUpload', methods=['GET', 'POST'])
-def videoUpload():
+# 업로드된 동영상 저장 경로
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')  # 현재 작업 디렉토리 기준으로 경로 설정
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # 폴더가 없으면 생성
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Flask 앱 설정에 추가
+
+# 동영상 업로드
+@app.route('/videoUpload', methods=['GET'])
+def video_upload_page():
     return render_template('videoUpload.html')
 
 # 네이버 로그인
