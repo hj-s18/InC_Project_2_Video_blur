@@ -15,8 +15,26 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Flask 앱 설정에 추가
 
 # 동영상 업로드
 @app.route('/videoUpload', methods=['GET'])
-def video_upload_page():
+def videoUpload():
     return render_template('videoUpload.html')
+
+# 동영상 업로드 처리
+@app.route('/upload', methods=['POST'])
+def upload_video():
+    if 'video' not in request.files:
+        return jsonify({'error': 'No video file in the request'}), 400
+    
+    video = request.files['video']
+    if video.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    # 파일 저장
+    try:
+        video_path = os.path.join(app.config['UPLOAD_FOLDER'], video.filename)
+        video.save(video_path)
+        return jsonify({'message': 'Video uploaded successfully', 'file_path': video_path}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # 네이버 로그인
 @app.route('/auth/naver')
