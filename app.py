@@ -84,6 +84,34 @@ def upload_video():
         # 예외 처리
         return jsonify({'error': str(e)}), 500
 
+# 파일 목록 조회 및 다운로드 페이지
+@app.route('/files', methods=['GET'])
+def list_files():
+    access_token = session.get("access_token", None)
+
+    if access_token:
+        account_info = requests.get(
+            "https://kapi.kakao.com/v2/user/me",
+            headers={"Authorization": f"Bearer {access_token}"}
+        ).json()
+
+        kakao_id = account_info.get("id")
+
+    try:
+        # 사용자 ID 폴더에 있는 파일 목록 가져오기
+        prefix = f"{kakao_id}/"  # 사용자 폴더 경로
+        response = s3_client.list_objects_v2(Bucket=S3_OUTPUT, Prefix=prefix)
+
+        # 파일 목록 생성
+        files = []
+        for obj in response.get('Contents', []):
+            files.append(obj['Key'].replace(prefix, ''))  # 파일명만 저장
+
+        return render_template('files.html', files=files, user_id=kakao_id)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # 네이버 로그인
 @app.route('/auth/naver')
 def naver_login():
