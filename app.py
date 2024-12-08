@@ -1,5 +1,7 @@
-from flask import Flask, session, redirect, request, render_template, jsonify
-import requests, os
+from flask import Flask, session, redirect, request, render_template, jsonify, send_file
+from io import BytesIO
+import requests, os, boto3
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 app = Flask(__name__)
 app.secret_key = "1234"  # Flask의 세션 암호화를 위한 키
@@ -8,12 +10,41 @@ app.secret_key = "1234"  # Flask의 세션 암호화를 위한 키
 REST_API_KEY = "d37e3286aa4a1b7e3a2c084309f70d72"
 REDIRECT_URI = "http://127.0.0.1:8000/kakaoLoginLogicRedirect"
 
-# 업로드된 동영상 저장 경로
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')  # 현재 작업 디렉토리 기준으로 경로 설정
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # 폴더가 없으면 생성
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Flask 앱 설정에 추가
+# AWS S3 설정
+S3_BUCKET = ''
+S3_ACCESS_KEY = ''
+S3_SECRET_KEY = ''
+REGION_NAME = ''
 
-# 동영상 업로드
+# S3 연결 함수
+def s3_connection():
+    try:
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=S3_ACCESS_KEY,
+            aws_secret_access_key=S3_SECRET_KEY,
+            region_name=REGION_NAME
+        )
+        # 연결 확인 (버킷 목록 조회)
+        response = s3_client.list_buckets()
+        print("S3 연결 성공! 버킷 목록:")
+        for bucket in response['Buckets']:
+            print(f"  - {bucket['Name']}")
+        return s3_client
+    except NoCredentialsError:
+        print("AWS 자격 증명 실패")
+    except PartialCredentialsError:
+        print("AWS 자격 증명 실패")
+    except Exception as e:
+        print(f"S3 연결 실패: {e}")
+    return None
+
+# S3 클라이언트 초기화
+s3_client = s3_connection()
+if not s3_client:
+    raise RuntimeError("S3 클라이언트 초기화 실패")
+
+# 동영상 업로드 페이지
 @app.route('/videoUpload', methods=['GET'])
 def videoUpload():
     return render_template('videoUpload.html')
@@ -21,19 +52,36 @@ def videoUpload():
 # 동영상 업로드 처리
 @app.route('/upload', methods=['POST'])
 def upload_video():
+    
+    access_token = session.get("access_token", None)
+
+    if access_token:
+        account_info = requests.get(
+            "https://kapi.kakao.com/v2/user/me",
+            headers={"Authorization": f"Bearer {access_token}"}
+        ).json()
+
+        kakao_id = account_info.get("id")
+        
+    # 업로드 파일 확인
     if 'video' not in request.files:
         return jsonify({'error': 'No video file in the request'}), 400
-    
+
     video = request.files['video']
     if video.filename == '':
         return jsonify({'error': 'No selected file'}), 400
-    
-    # 파일 저장
+
     try:
-        video_path = os.path.join(app.config['UPLOAD_FOLDER'], video.filename)
-        video.save(video_path)
-        return jsonify({'message': 'Video uploaded successfully', 'file_path': video_path}), 200
+        # S3에 파일 업로드
+        video_key = f"{kakao_id}/{video.filename}"  # S3 내 파일 경로 설정
+        s3_client.upload_fileobj(video, S3_BUCKET, video_key)
+
+        # 업로드 성공 응답
+        s3_url = f"https://{S3_BUCKET}.s3.{REGION_NAME}.amazonaws.com/{video_key}"
+        return jsonify({'message': 'Video uploaded successfully', 'file_path': s3_url}), 200
+
     except Exception as e:
+        # 예외 처리
         return jsonify({'error': str(e)}), 500
 
 # 네이버 로그인
