@@ -12,6 +12,7 @@ REDIRECT_URI = "http://127.0.0.1:8000/kakaoLoginLogicRedirect"
 
 # AWS S3 설정
 S3_BUCKET = ''
+S3_OUTPUT = ''
 S3_ACCESS_KEY = ''
 S3_SECRET_KEY = ''
 REGION_NAME = ''
@@ -109,6 +110,37 @@ def list_files():
 
         return render_template('files.html', files=files, user_id=kakao_id)
 
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# 파일 다운로드 처리
+@app.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    access_token = session.get("access_token", None)
+
+    if access_token:
+        account_info = requests.get(
+            "https://kapi.kakao.com/v2/user/me",
+            headers={"Authorization": f"Bearer {access_token}"}
+        ).json()
+
+        kakao_id = account_info.get("id")
+
+    object_key = f"{kakao_id}/{filename}"  # 사용자 ID 기반 파일 경로
+
+    try:
+        # S3에서 파일 다운로드
+        file_obj = BytesIO()
+        s3_client.download_fileobj(S3_OUTPUT, object_key, file_obj)
+        file_obj.seek(0)  # 스트림의 시작 위치로 이동
+
+        # 클라이언트에게 파일 전송
+        return send_file(
+            file_obj,
+            as_attachment=True,
+            download_name=filename,  # 다운로드 파일 이름
+            mimetype='application/octet-stream'
+        )
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
