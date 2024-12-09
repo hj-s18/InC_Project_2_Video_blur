@@ -7,4 +7,4 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python3", "app.py", "--host=0.0.0.0"]
+CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:8000", "app:app"]
