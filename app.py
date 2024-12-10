@@ -8,14 +8,14 @@ app.secret_key = "1234"  # Flask의 세션 암호화를 위한 키
 
 # 카카오 API 설정
 REST_API_KEY = "d37e3286aa4a1b7e3a2c084309f70d72"
-REDIRECT_URI = "http://127.0.0.1:8000/kakaoLoginLogicRedirect"
+REDIRECT_URI = "http://<nlb DNS 이름>/kakaoLoginLogicRedirect"
 
 # AWS S3 설정
-S3_BUCKET = ''
-S3_OUTPUT = ''
-S3_ACCESS_KEY = ''
-S3_SECRET_KEY = ''
-REGION_NAME = ''
+S3_BUCKET = '<S3 upload-bucket 이름'
+S3_OUTPUT = '<S3 download-bucket 이름>'
+S3_ACCESS_KEY = '<ACCESS-KEY>'
+S3_SECRET_KEY = '<SECRET_KEY>'
+REGION_NAME = '<REGION_NAME>'
 
 # S3 연결 함수
 def s3_connection():
