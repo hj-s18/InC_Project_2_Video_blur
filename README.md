@@ -1,4 +1,4 @@
-## InC_Project_2
+## InC_Project_2 
 - 사용자가 업로드한 영상을 자동으로 모자이크 처리하는 웹 서비스
 - Amazon Rekognition Video를 활용해 업로드된 영상에서 얼굴 객체를 감지하고, OpenCV 라이브러리를 통해 감지된 얼굴 영역을 모자이크 처리
 - Jenkins CI/CD 파이프라인을 구축해 소스 코드 변경 시 자동으로 Docker 이미지를 빌드하고 AWS ECR에 푸시
