@@ -7,48 +7,28 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
     <style>
-        /* 상품 카드 이미지 크기 조정 */
-        .card-img-top {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        /* 필기체 스타일 추가 */
         .fancy-title {
             font-family: 'Dancing Script', cursive;
             font-size: 2.5em;
             text-align: center;
             color: #333;
         }
-
-        /* 내비게이션 링크 스타일 */
         .navbar-nav .nav-link {
             font-family: 'Nanum Pen Script', cursive;
             color: #333;
             font-size: 24px;
         }
-
-        /* 카드 본문 패딩 추가 */
-        .card-body {
-            padding: 1rem;
-            text-align: center;
-        }
-
-        /* 로고 크기 조정 */
-        .navbar-brand img {
-            width: 50px;
-            height: auto;
-        }
-
         .btn-primary {
             background-color: #333;
             border: none;
             color: white;
         }
-
         .btn-primary:hover {
             background-color: #555;
+        }
+        .navbar-brand img {
+            width: 40px; /* 로고의 가로 크기 설정 */
+            height: auto; /* 비율 유지 */
         }
     </style>
 </head>
@@ -56,7 +36,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{{ url_for('home') }}">
             <img src="{{ url_for('static', filename='image/logo.png') }}" alt="쇼핑몰 로고">
-        </a>        
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -87,34 +67,15 @@
 
         <h1 class="fancy-title">Video List</h1>
 
-        <!-- <div class="row mt-4">
-            {% for product in selling_products %}
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100">
-                    <img src="{{ product.image_path }}" class="card-img-top" alt="상품 이미지">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.product_name }}</h5>
-                        <p class="card-text">{{ product.description }}</p>
-                        <a href="{{ url_for('product.buyProduct', product_id=product.product_id) }}" class="btn btn-primary">구매하기</a>
-                    </div>
-                </div>
-            </div>
+        <ul class="list-group">
+            {% for file in files %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ file }}
+                <a href="{{ url_for('download_file', filename=file) }}" class="btn btn-primary btn-sm">다운로드</a>
+            </li>
             {% endfor %}
-
-            {% for product in sold_products %}
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100">
-                    <img src="{{ product.image_path }}" class="card-img-top" alt="상품 이미지">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.product_name }}</h5>
-                        <p class="card-text">{{ product.description }}</p>
-                        <button class="btn btn-secondary" disabled>판매 완료</button>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div> -->
+        </ul>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -86,8 +86,8 @@ def upload_video():
         return jsonify({'error': str(e)}), 500
 
 # 파일 목록 조회 및 다운로드 페이지
-@app.route('/files', methods=['GET'])
-def list_files():
+@app.route('/home', methods=['GET'])
+def home():
     access_token = session.get("access_token", None)
 
     if access_token:
@@ -108,7 +108,7 @@ def list_files():
         for obj in response.get('Contents', []):
             files.append(obj['Key'].replace(prefix, ''))  # 파일명만 저장
 
-        return render_template('files.html', files=files, user_id=kakao_id)
+        return render_template('home.html', files=files, user_id=kakao_id)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -235,29 +235,6 @@ def naver_callback():
     }
     
     return redirect('/home')
-
-
-@app.route("/home", methods=["GET"])
-def home():
-    # 카카오 토큰 확인
-    kakao_access_token = session.get("access_token")
-    if kakao_access_token:
-        headers = {"Authorization": f"Bearer {kakao_access_token}"}
-        kakao_user_info = requests.get(
-            "https://kapi.kakao.com/v2/user/me", headers=headers
-        ).json()
-        return render_template("home.html", user_info=kakao_user_info)
-    
-    # 네이버 토큰 확인
-    naver_access_token = session.get("naver_access_token")
-    if naver_access_token:
-        headers = {"Authorization": f"Bearer {naver_access_token}"}
-        naver_user_info = requests.get(
-            "https://openapi.naver.com/v1/nid/me", headers=headers
-        ).json()
-        return render_template("home.html", user_info=naver_user_info.get("response"))
-    
-    return redirect("/")  # 로그인이 안 된 상태라면 로그인 페이지로 리다이렉트
 
 
 @app.route("/login", methods=["GET"])
