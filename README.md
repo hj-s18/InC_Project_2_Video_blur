@@ -8,4 +8,4 @@
 - IAM 역할과 보안 그룹 설정을 통해 안전한 서비스 운영 환경 조성.
 ---
 ### 프로젝트 아키텍처
-![project2 drawio (1)](https://github.com/user-attachments/assets/dba2d186-4231-433a-afe2-c287f1959144)
+![project2 drawio](https://github.com/user-attachments/assets/6d2fadc3-cc0a-4d0f-bc05-474bd0587271)
