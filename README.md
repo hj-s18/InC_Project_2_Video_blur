@@ -8,4 +8,4 @@
 - IAM 역할과 보안 그룹 설정을 통해 안전한 서비스 운영 환경 조성.
 ---
 ### 프로젝트 아키텍처
-![화면 캡처 2024-12-12 202813](https://github.com/user-attachments/assets/c8076097-b718-437c-8e76-e6255a85f8d7)
+![Project2_Architecture](https://github.com/user-attachments/assets/38b6a68e-a38c-459b-b03c-299b7bde900f)
