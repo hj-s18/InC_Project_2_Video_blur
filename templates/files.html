@@ -1,18 +1,49 @@
+<!-- Flask 웹 애플리케이션에서 동적으로 생성된 HTML 템플릿 -->
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>  <!-- 헤드 섹션 시작 : 문서의 메타데이터를 포함하는 영역 -->
+    
+    <!-- 문자 인코딩 설정 : 문서에서 사용할 인코딩을 UTF-8로 지정 -->
+    <!-- UTF-8 : 표준 문자 인코딩 -->
     <meta charset="UTF-8">
+
+    <!-- 반응형 웹 설정 : viewport 설정을 통해 모바일 장치에서 웹사이트를 표시 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- 웹페이지 제목 : 브라우저 탭에 표시될 제목 -->
     <title>My Files</title>
+    
 </head>
-<body>
+
+<body>  <!-- 본문 섹션 시작 : 화면에 실제로 보이는 콘텐츠가 위치하는 본문 영역 -->
+
+    <!-- 제목 표시 -->
     <h1>My Uploaded Videos</h1>
+
+    <!-- 리스트 시작 : ul(unordered list)은 항목들이 점으로 구분되어 표시됨 -->
     <ul>
+
+        <!-- 템플릿 루프 시작 : jinja2 템플릿 엔진 문법으로, python 코드에서 전달된 files 리스트의 각 항목(file)에 대한 반복 작업을 수행함 -->
         {% for file in files %}
+
+            <!-- 목록 항목 시작 -->
+            <!-- <li>는 리스트 항목 하나를 나타탬 => 이 태그로 하나의 항목이 시작됨 -->
             <li>
+
+                <!-- 템플릿 데이터 출력 : jinja2 문법으로, file 변수에 저장된 값을 출력함 -->
                 {{ file }}
+
+                <!-- 다운로드 링크 생성 -->
+                <!-- <a> : 하이퍼링크 만들기 -->
+                <!-- Flask의 url_for() 함수를 사용하여 download_file 이라는 Flask 라우트로 이동하는 링크를 동적으로 생성 -->
+                <!-- filename=file : 해당 라우트에 파일 이름을 전달하는 매개변수 -->
+                <!-- 화면에는 'Download'라는 텍스트가 표시됨 -->
                 <a href="{{ url_for('download_file', filename=file) }}">Download</a>
+                
             </li>
+        
+        <!-- 템플릿 루프 종료 -->
         {% endfor %}
     </ul>
 </body>
